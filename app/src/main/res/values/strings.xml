@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">PopularMovies</string>
+    <string name="app_name" translatable="false">PopularMovies</string>
+    <!-- <string name="themoviedb_api_Key">FILL_THE_KEY</string> -->
 </resources>
