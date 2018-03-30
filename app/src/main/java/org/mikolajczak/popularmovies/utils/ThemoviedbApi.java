@@ -1,35 +1,88 @@
 package org.mikolajczak.popularmovies.utils;
 
 
+import android.net.Uri;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mikolajczak.popularmovies.model.Movie;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
- * Retrive data from themoviedb.org
+ * Retrieve data from themoviedb.org
  */
 public class ThemoviedbApi {
-    final String API_DOMAIN = "api.themoviedb.org";
-    final String API_POPULAR_URL = "/movie/popular";
-    final String API_RATED_URL = "/movie/top_rated";
+    final public static String CATEGORY_POPULAR = "movie/popular";
+    final public static String CATEGORY_TOPRATED = "movie/top_rated";
 
-    public static ArrayList<Movie> getMoviesFromUrl(URL url, String apiUrlCategory) {
-        // TODO
-        return null;
+    final static String API_BASE_URL = "https://api.themoviedb.org/3";
+    final static String API_PARAM = "api_key";
+    private static String API_KEY;
+
+    public static void setApiKey(String key) {
+        ThemoviedbApi.API_KEY = key;
     }
 
-    public static ArrayList<Movie> getMostPopular() {
-        // TODO
-        return null;
+    /**
+     * return list of movies according to apiCategory
+     * @param category CATEGORY_POPULAR CATEGORY_TOPRATED
+     * @return
+     */
+    public static ArrayList<Movie> getMovies(String category) {
+        URL url = buildUrl(category);
+
+        String json;
+        try {
+            json = getUrlContent(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return getMoviesFromJson(json);
     }
 
-    public static ArrayList<Movie> getHighestRated() {
-        // TODO
-        return null;
+    public static String getUrlContent(URL url) throws IOException {
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        try {
+            InputStream inputStream = urlConnection.getInputStream();
+
+            Scanner scanner = new Scanner(inputStream);
+            scanner.useDelimiter("\\A");
+
+            boolean hasInput = scanner.hasNext();
+            if (hasInput) {
+                return scanner.next();
+            } else {
+                return null;
+            }
+        } finally {
+            urlConnection.disconnect();
+        }
+    }
+
+
+    private static URL buildUrl(String path) {
+        Uri buildUri = Uri.parse(API_BASE_URL)
+                .buildUpon()
+                .appendEncodedPath(path)
+                .appendQueryParameter(API_PARAM, API_KEY)
+                .build();
+        URL url = null;
+        try {
+            url = new URL(buildUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 
     static ArrayList<Movie> getMoviesFromJson(String json) {
