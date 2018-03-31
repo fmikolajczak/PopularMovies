@@ -3,4 +3,9 @@
 
     <string name="app_name" translatable="false">PopularMovies</string>
     <item name="image_base_url" type="string">http://image.tmdb.org/t/p/w185</item>
+
+    <string-array name="movies_category">
+        <item>Most Popular</item>
+        <item>Highest Rated</item>
+    </string-array>
 </resources>

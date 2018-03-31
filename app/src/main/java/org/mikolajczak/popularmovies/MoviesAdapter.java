@@ -45,11 +45,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     @Override
     public int getItemCount() {
-        if(ThemoviedbApi.getPopularMovies() != null) {
-            return ThemoviedbApi.getPopularMovies().size();
-        } else {
-            return 0;
-        }
+        return ThemoviedbApi.getCount();
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -66,16 +62,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
         void bind(int listIndex) {
             Log.d(TAG, "Movieholder bind: " + String.valueOf(listIndex));
-            ArrayList<Movie> movie = ThemoviedbApi.getPopularMovies();
-            textView.setText(movie.get(listIndex).getTitle());
-            Context context = view.getContext();
+            Movie movie = ThemoviedbApi.getMovie(listIndex);
 
-            String posterPath = context.getResources().getString(R.string.image_base_url) +
-                    movie.get(listIndex).getPoster();
-            Picasso.with(context)
-                    .load(posterPath)
-                    .into(imageView);
-            Log.d(TAG, "posterPath: " + posterPath);
+            if(movie != null) {
+                textView.setText(movie.getTitle());
+                Context context = view.getContext();
+
+                String posterPath = context.getResources().getString(R.string.image_base_url) + movie.getPoster();
+
+                Picasso.with(context).load(posterPath).into(imageView);
+                Log.d(TAG, "posterPath: " + posterPath);
+            }
         }
     }
 }
