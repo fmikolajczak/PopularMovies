@@ -2,6 +2,7 @@ package org.mikolajczak.popularmovies;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,7 +49,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         return ThemoviedbApi.getCount();
     }
 
-    class MovieViewHolder extends RecyclerView.ViewHolder {
+    class MovieViewHolder extends RecyclerView.ViewHolder  implements  View.OnClickListener {
         TextView textView;
         ImageView imageView;
         View view;
@@ -58,6 +59,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             view = itemView;
             textView = itemView.findViewById(R.id.debug_tv);
             imageView = itemView.findViewById(R.id.image_view);
+            itemView.setOnClickListener(this);
         }
 
         void bind(int listIndex) {
@@ -74,5 +76,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                 Log.d(TAG, "posterPath: " + posterPath);
             }
         }
+
+
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "onClick: getLayoutPositition: " + getLayoutPosition());
+
+            Intent intent = new Intent(v.getContext(), DetailActivity.class);
+            intent.putExtra(DetailActivity.EXTRA_POSITION, getLayoutPosition());
+            v.getContext().startActivity(intent);
+        }
     }
+
+
 }

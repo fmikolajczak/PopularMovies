@@ -2,7 +2,13 @@
     <!-- <string name="themoviedb_api_Key">FILL_THE_KEY</string> -->
 
     <string name="app_name" translatable="false">PopularMovies</string>
+    <string name="title_label">Title</string>
+    <string name="release_date_label">Release date</string>
+    <string name="vote_label">Votes</string>
+    <string name="plot_synopsis_label">Plot synopsis</string>
+    <string name="detail_error_message">Movie data not available</string>
     <item name="image_base_url" type="string">http://image.tmdb.org/t/p/w185</item>
+    <item name="image_big_url" type="string">http://image.tmdb.org/t/p/w342</item>
 
     <string-array name="movies_category">
         <item>Most Popular</item>

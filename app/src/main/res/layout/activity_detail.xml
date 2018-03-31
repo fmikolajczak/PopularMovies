@@ -1,9 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:columnCount="2"
+    android:rowCount="5"
     tools:context=".DetailActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:id="@+id/poster_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/title_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_label"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/poster_iv"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/title_tv"
+        android:layout_toRightOf="@id/poster_iv"
+        android:layout_below="@id/title_label"
+        />
+
+    <TextView
+        android:id="@+id/release_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/release_date_label"
+        android:textStyle="bold"
+        android:layout_toRightOf="@id/poster_iv"
+        android:layout_below="@id/title_tv"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/release_date_tv"
+        android:layout_toRightOf="@id/poster_iv"
+        android:layout_below="@id/release_label"/>
+
+    <TextView
+        android:id="@+id/vote_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/vote_label"
+        android:textStyle="bold"
+        android:layout_toRightOf="@id/poster_iv"
+        android:layout_below="@id/release_date_tv"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vote_tv"
+        android:layout_toRightOf="@id/poster_iv"
+        android:layout_below="@id/vote_label"/>
+
+    <TextView
+        android:id="@+id/plot_label"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/plot_synopsis_label"
+        android:layout_below="@id/poster_iv"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/plot_tv"
+        android:layout_below="@id/plot_label"
+        android:layout_alignParentLeft="true"/>
+
+</RelativeLayout>
