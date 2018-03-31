@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.TextView;
 
 import org.mikolajczak.popularmovies.model.Movie;
@@ -13,45 +14,38 @@ import org.mikolajczak.popularmovies.utils.ThemoviedbApi;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class DiscoveryActivity extends AppCompatActivity {
-
+public class DiscoveryActivity extends AppCompatActivity {  
+    final private static String TAG  = "MOVIES";
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate: start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discovery);
 
         ThemoviedbApi.setApiKey(getResources().getString(R.string.themoviedb_api_key));
 
-/*
-        final TextView tv = findViewById(R.id.textview);
-
         new AsyncTask(){
             @Override
             protected Object doInBackground(Object[] objects) {
-                ArrayList<Movie> movies = ThemoviedbApi.getMovies(ThemoviedbApi.CATEGORY_POPULAR);
+                Log.d(TAG, "doInBackground: execute getPopularMovies()");
+                ThemoviedbApi.retrievePopularMovies();
+                Log.d(TAG, "doInBackground: execute getTopratedMovies()");
+                ThemoviedbApi.retrieveTopratedMovies();
 
-                return movies;
+                return null;
             }
 
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                ArrayList<Movie> movies = (ArrayList<Movie>) o;
-                if(movies == null) {
-                    tv.setText("Movies is null");
-                } else {
-                    for (Movie movie : movies) {
-                        tv.append(movie.getTitle() + "\n");
-                    }
-                }
+                RecyclerView recyclerView = findViewById(R.id.movies_rv);
+                MoviesAdapter moviesAdapter = new MoviesAdapter();
+
+                recyclerView.setAdapter(moviesAdapter);
+                recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3));
             }
         }.execute();
-*/
 
-        RecyclerView recyclerView = findViewById(R.id.movies_rv);
-        MoviesAdapter moviesAdapter = new MoviesAdapter();
-
-        recyclerView.setAdapter(moviesAdapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
     }
 }

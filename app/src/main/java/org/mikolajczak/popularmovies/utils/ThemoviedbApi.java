@@ -2,6 +2,7 @@ package org.mikolajczak.popularmovies.utils;
 
 
 import android.net.Uri;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +17,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Retrieve data from themoviedb.org
  */
@@ -27,15 +30,45 @@ public class ThemoviedbApi {
     final static String API_PARAM = "api_key";
     private static String API_KEY;
 
+    private static ArrayList<Movie> moviesPopular;
+    private static ArrayList<Movie> moviesToprated;
+
+    final private static String TAG = "MOVIES";
+
     public static void setApiKey(String key) {
         ThemoviedbApi.API_KEY = key;
     }
 
-    /**
-     * return list of movies according to apiCategory
-     * @param category CATEGORY_POPULAR CATEGORY_TOPRATED
-     * @return
-     */
+    public static ArrayList<Movie> retrievePopularMovies() {
+        if (moviesPopular == null) {
+            Log.d(TAG, "getPopularMovies: retrieve from network");
+            moviesPopular = getMovies(CATEGORY_POPULAR);
+        }
+        return moviesPopular;
+    }
+
+    public static ArrayList<Movie> retrieveTopratedMovies() {
+        if (moviesToprated == null) {
+            Log.d(TAG, "getTopratedMovies: retrieve from network");
+            moviesToprated = getMovies(CATEGORY_TOPRATED);
+        }
+        return moviesToprated;
+    }
+
+    public static ArrayList<Movie> getPopularMovies() {
+        return moviesPopular;
+    }
+
+    public static ArrayList<Movie> getTopratedMovies() {
+        return moviesToprated;
+    }
+
+
+        /**
+         * return list of movies according to apiCategory
+         * @param category CATEGORY_POPULAR CATEGORY_TOPRATED
+         * @return
+         */
     public static ArrayList<Movie> getMovies(String category) {
         URL url = buildUrl(category);
 
