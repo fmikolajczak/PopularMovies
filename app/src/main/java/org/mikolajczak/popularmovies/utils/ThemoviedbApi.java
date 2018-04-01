@@ -3,7 +3,6 @@ package org.mikolajczak.popularmovies.utils;
 
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,14 +11,11 @@ import org.mikolajczak.popularmovies.model.Movie;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Retrieve data from themoviedb.org
@@ -106,7 +102,7 @@ public class ThemoviedbApi {
         /**
          * return list of movies according to apiCategory
          * @param category CATEGORY_POPULAR CATEGORY_TOPRATED
-         * @return
+         * @return list of movies
          */
     public static ArrayList<Movie> getMovies(String category, int page) {
         URL url = buildUrl(category, page);

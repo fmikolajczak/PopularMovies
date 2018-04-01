@@ -1,6 +1,5 @@
 package org.mikolajczak.popularmovies;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -25,12 +24,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         Context context = parent.getContext();
         int layoutIdForItem  = R.layout.item;
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
 
-        View view = layoutInflater.inflate(layoutIdForItem, parent, shouldAttachToParentImmediately);
-        MovieViewHolder viewHolder = new MovieViewHolder(view);
-
-        return viewHolder;
+        View view = layoutInflater.inflate(layoutIdForItem, parent, false);
+        return new MovieViewHolder(view);
     }
 
     @Override
@@ -68,6 +64,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                 Context context = view.getContext();
                 String posterPath = context.getResources().getString(R.string.image_base_url) + movie.getPoster();
                 Picasso.with(context).load(posterPath).into(imageView);
+                imageView.setContentDescription(context.getResources().getString(R.string.poster_description_prefix) +
+                    movie.getTitle());
             }
         }
 

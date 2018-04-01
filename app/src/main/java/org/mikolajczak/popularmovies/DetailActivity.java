@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
     public static final String EXTRA_POSITION = "extra_position";
-    private static final int DEFAULT_POSTIION = -1;
+    private static final int DEFAULT_POSITION = -1;
 
     @BindView(R.id.title_tv) TextView titleTv;
     @BindView(R.id.poster_iv) ImageView imageVi;
@@ -36,8 +36,8 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        int position = intent.getIntExtra(EXTRA_POSITION, DEFAULT_POSTIION);
-        if (position == DEFAULT_POSTIION) {
+        int position = intent.getIntExtra(EXTRA_POSITION, DEFAULT_POSITION);
+        if (position == DEFAULT_POSITION) {
             CloseOnError();
             return;
         }
@@ -45,14 +45,18 @@ public class DetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Movie movie = ThemoviedbApi.getMovie(position);
-        setTitle(movie.getTitle());
-        populateUI(movie);
+        if (movie != null) {
+            setTitle(movie.getTitle());
+            populateUI(movie);
+        }
     }
 
     private void populateUI(Movie movie) {
         Picasso.with(this)
                 .load(getResources().getString(R.string.image_big_url) + movie.getPoster())
                 .into(imageVi);
+        imageVi.setContentDescription(getResources().getString(R.string.poster_description_prefix) +
+                movie.getTitle());
         titleTv.setText(movie.getTitle());
         releaseDateTv.setText(movie.getReleaseDate());
         voteTv.setText(String.valueOf(movie.getVoteAvg()));
