@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +15,10 @@ import com.squareup.picasso.Picasso;
 import org.mikolajczak.popularmovies.model.Movie;
 import org.mikolajczak.popularmovies.utils.ThemoviedbApi;
 
-import java.util.ArrayList;
-
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
     final static String TAG = "MOVIES";
+    private int itemCount = -1;
 
-    MoviesAdapter() {
-        super();
-        Log.d(TAG, "MoviesAdapter: ");
-    }
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -46,7 +40,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     @Override
     public int getItemCount() {
-        return ThemoviedbApi.getCount();
+        int count = ThemoviedbApi.getCount();
+        if (count > itemCount) {
+            itemCount = count;
+        }
+        return count;
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder  implements  View.OnClickListener {
@@ -63,25 +61,19 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         }
 
         void bind(int listIndex) {
-            Log.d(TAG, "Movieholder bind: " + String.valueOf(listIndex));
             Movie movie = ThemoviedbApi.getMovie(listIndex);
 
             if(movie != null) {
                 textView.setText(movie.getTitle());
                 Context context = view.getContext();
-
                 String posterPath = context.getResources().getString(R.string.image_base_url) + movie.getPoster();
-
                 Picasso.with(context).load(posterPath).into(imageView);
-                Log.d(TAG, "posterPath: " + posterPath);
             }
         }
 
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "onClick: getLayoutPositition: " + getLayoutPosition());
-
             Intent intent = new Intent(v.getContext(), DetailActivity.class);
             intent.putExtra(DetailActivity.EXTRA_POSITION, getLayoutPosition());
             v.getContext().startActivity(intent);

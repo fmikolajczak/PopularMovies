@@ -31,7 +31,7 @@ public class ThemoviedbApi {
     final static String API_BASE_URL = "https://api.themoviedb.org/3";
     final static String API_KEY_PARAM = "api_key";
     final static String API_PAGE_PARAM = "page";
-    private static final int THRESHOLD = 9;
+    private static final int THRESHOLD = 20;
     private static String API_KEY;
 
     private static ArrayList<Movie> moviesPopular = new ArrayList<>();
@@ -50,8 +50,15 @@ public class ThemoviedbApi {
         ThemoviedbApi.API_KEY = key;
     }
 
+    public static void retrieveMoviesOnBackgroundThread() {
+        if ( activeCategory == 0) {
+            retrievePopularMoviesOnBackgroundThread();
+        } else {
+            retrieveTopratedMoviesOnBackgroundThread();
+        }
+     }
+
     public static void retrievePopularMovies() {
-        Log.d(TAG, "getPopularMovies: retrieve from network");
         popularPage++;
         moviesPopular.addAll(getMovies(CATEGORY_POPULAR, popularPage));
     }
@@ -61,7 +68,6 @@ public class ThemoviedbApi {
         new AsyncTask(){
             @Override
             protected Object doInBackground(Object[] objects) {
-                Log.d(TAG, "doInBackground: execute retrievePopularMovies()");
                 retrievePopularMovies();
                 return null;
             }
@@ -76,7 +82,6 @@ public class ThemoviedbApi {
     }
 
     public static void retrieveTopratedMovies() {
-        Log.d(TAG, "getTopratedMovies: retrieve from network");
         topratedPage++;
         moviesToprated.addAll(getMovies(CATEGORY_TOPRATED, topratedPage));
     }
@@ -86,7 +91,6 @@ public class ThemoviedbApi {
         new AsyncTask(){
             @Override
             protected Object doInBackground(Object[] objects) {
-                Log.d(TAG, "doInBackground: execute retrieveTopratedMovies()");
                 retrieveTopratedMovies();
                 return null;
             }

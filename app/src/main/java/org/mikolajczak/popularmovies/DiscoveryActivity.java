@@ -5,29 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import org.mikolajczak.popularmovies.model.Movie;
 import org.mikolajczak.popularmovies.utils.ThemoviedbApi;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
-
-import javax.security.auth.callback.CallbackHandler;
 
 public class DiscoveryActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     final private static String TAG  = "MOVIES";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discovery);
 
@@ -43,9 +32,7 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
         new AsyncTask(){
             @Override
             protected Object doInBackground(Object[] objects) {
-                Log.d(TAG, "doInBackground: execute getPopularMovies()");
                 ThemoviedbApi.retrievePopularMovies();
-                Log.d(TAG, "doInBackground: execute getTopratedMovies()");
                 ThemoviedbApi.retrieveTopratedMovies();
 
                 return null;
@@ -58,6 +45,7 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
         }.execute();
+
 
 
         // spinner setup
@@ -73,7 +61,6 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "onItemSelected: position " + position);
         ThemoviedbApi.setActiveCategory(position);
         RecyclerView recyclerView = findViewById(R.id.movies_rv);
         if(recyclerView.getAdapter() != null ) {
