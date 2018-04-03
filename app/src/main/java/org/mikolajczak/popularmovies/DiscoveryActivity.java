@@ -20,8 +20,6 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discovery);
 
-        ThemoviedbApi.setApiKey(getResources().getString(R.string.themoviedb_api_key));
-
         final RecyclerView recyclerView = findViewById(R.id.movies_rv);
         MoviesAdapter moviesAdapter = new MoviesAdapter();
 
