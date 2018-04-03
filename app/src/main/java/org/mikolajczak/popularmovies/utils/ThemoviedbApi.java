@@ -43,6 +43,7 @@ public class ThemoviedbApi {
     private static boolean loading = false;
 
     final private static String TAG = "MOVIES";
+    private static boolean configured = false;
 
     public static void retrieveMoviesOnBackgroundThread() {
         if ( activeCategory == 0) {
@@ -107,7 +108,6 @@ public class ThemoviedbApi {
 
         String json;
         try {
-            Log.d(TAG, "getMovies: url: " + url);
             json = getUrlContent(url);
         } catch (IOException e) {
             e.printStackTrace();
@@ -225,5 +225,13 @@ public class ThemoviedbApi {
         } else {
             return moviesToprated.size();
         }
+    }
+
+    public static void setConfigured() {
+        configured = true;
+    }
+
+    public static boolean isConfigured(){
+        return configured;
     }
 }

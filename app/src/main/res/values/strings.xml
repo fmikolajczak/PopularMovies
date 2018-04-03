@@ -9,6 +9,7 @@
     <string name="detail_error_message">Movie data not available</string>
     <string name="poster_iv_content_description">Movie poster</string>
     <string name="poster_description_prefix">Movie poster of</string>
+    <string name="no_internet_error_message">No internet connection!</string>
     <item name="image_base_url" type="string">http://image.tmdb.org/t/p/w185</item>
     <item name="image_big_url" type="string">http://image.tmdb.org/t/p/w342</item>
 
