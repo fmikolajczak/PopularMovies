@@ -3,10 +3,12 @@ package org.mikolajczak.popularmovies.utils;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mikolajczak.popularmovies.BuildConfig;
 import org.mikolajczak.popularmovies.model.Movie;
 
 import java.io.IOException;
@@ -23,12 +25,12 @@ import java.util.Scanner;
 public class ThemoviedbApi {
     final public static String CATEGORY_POPULAR = "movie/popular";
     final public static String CATEGORY_TOPRATED = "movie/top_rated";
+    private static final String API_KEY = BuildConfig.THE_MOVIE_DB_API_KEY;
 
     final static String API_BASE_URL = "https://api.themoviedb.org/3";
     final static String API_KEY_PARAM = "api_key";
     final static String API_PAGE_PARAM = "page";
     private static final int THRESHOLD = 20;
-    private static String API_KEY;
 
     private static ArrayList<Movie> moviesPopular = new ArrayList<>();
     private static ArrayList<Movie> moviesToprated = new ArrayList<>();
@@ -41,10 +43,6 @@ public class ThemoviedbApi {
     private static boolean loading = false;
 
     final private static String TAG = "MOVIES";
-
-    public static void setApiKey(String key) {
-        ThemoviedbApi.API_KEY = key;
-    }
 
     public static void retrieveMoviesOnBackgroundThread() {
         if ( activeCategory == 0) {
@@ -109,10 +107,11 @@ public class ThemoviedbApi {
 
         String json;
         try {
+            Log.d(TAG, "getMovies: url: " + url);
             json = getUrlContent(url);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
 
         return getMoviesFromJson(json);
@@ -155,12 +154,13 @@ public class ThemoviedbApi {
     }
 
     static ArrayList<Movie> getMoviesFromJson(String json) {
+        ArrayList<Movie> movies = new ArrayList<>();
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(json);
         } catch (JSONException e) {
             e.printStackTrace();
-            return null;
+            return movies;
         }
 
         JSONArray resultsJsonArray;
@@ -168,10 +168,10 @@ public class ThemoviedbApi {
             resultsJsonArray = jsonObject.getJSONArray("results");
         } catch (JSONException e) {
             e.printStackTrace();
-            return null;
+            return movies;
         }
 
-        ArrayList<Movie> movies = new ArrayList<>();
+
         JSONObject jsonMovie;
         Movie movie;
         try {
