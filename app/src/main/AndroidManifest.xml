@@ -21,7 +21,12 @@
         </activity>
         <activity android:name=".DetailActivity" android:parentActivityName=".DiscoveryActivity" >
         </activity>
+        
+        <provider
+            android:authorities="org.mikolajczak.popularmovies"
+            android:name="org.mikolajczak.popularmovies.model.FavoritesContentProvider"
+            android:exported="false"
+            />
     </application>
-
 
 </manifest>
