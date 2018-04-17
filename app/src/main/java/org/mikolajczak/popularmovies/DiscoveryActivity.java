@@ -1,6 +1,7 @@
 package org.mikolajczak.popularmovies;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.mikolajczak.popularmovies.model.FavoritesContract;
 import org.mikolajczak.popularmovies.utils.ThemoviedbApi;
 
 public class DiscoveryActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -45,6 +47,20 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
 
         spinner.setOnItemSelectedListener(this);
 
+        Cursor cursor = getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,null,null,null,null);
+
+        String line = "";
+        for (int i = 0 ; i < cursor.getColumnCount(); i++) {
+            line += cursor.getColumnName(i) + "; ";
+        }
+        Log.d(TAG, "onCreate: columns: " + line );
+        while(cursor.moveToNext()) {
+            line = "";
+            for (int i = 0 ; i < cursor.getColumnCount(); i++) {
+                line += cursor.getString(i) + "; ";
+            } Log.d(TAG, "onCreate: " + line );
+
+        }
     }
 
 

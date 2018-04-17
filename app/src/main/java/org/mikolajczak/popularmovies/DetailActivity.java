@@ -1,15 +1,20 @@
 package org.mikolajczak.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.mikolajczak.popularmovies.model.FavoritesContract;
 import org.mikolajczak.popularmovies.model.Movie;
 import org.mikolajczak.popularmovies.utils.ThemoviedbApi;
 
@@ -17,8 +22,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
+    private static final String TAG =  "PM DetailA";
+
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+
+    private Movie movie;
 
     @BindView(R.id.title_tv) TextView titleTv;
     @BindView(R.id.poster_iv) ImageView imageVi;
@@ -45,7 +54,7 @@ public class DetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        Movie movie = ThemoviedbApi.getMovie(position);
+        movie = ThemoviedbApi.getMovie(position);
         if (movie != null) {
             setTitle(movie.getTitle());
             populateUI(movie);
@@ -67,5 +76,31 @@ public class DetailActivity extends AppCompatActivity {
     private void CloseOnError() {
         finish();
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onClickFavoriteCb(View view) {
+        CheckBox cb = (CheckBox) view;
+        Log.d(TAG, "onClickFavoriteCb: isChecked: " + cb.isChecked());
+        if(cb.isChecked()) {
+            // TODO: add to favorites
+            ContentValues values = new ContentValues();
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIEDB_ID, movie.getMoviedbId());
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_PLOT, movie.getPlotSynopsis());
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_POSTER, movie.getPoster());
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_RELEASE, movie.getReleaseDate());
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_TITLE, movie.getTitle());
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_VOTE, movie.getVoteAvg());
+
+            Uri uri = getContentResolver().insert(FavoritesContract.FavoritesEntry.CONTENT_URI, values);
+
+            if(uri != null) {
+                Log.d(TAG, "onClickFavoriteCb: uri: " + uri);
+            }
+        } else {
+            Uri uri = FavoritesContract.FavoritesEntry.CONTENT_URI.buildUpon().appendPath(String
+                    .valueOf(movie.getMoviedbId())).build();
+            int count = getContentResolver().delete(uri, null, null);
+            Log.d(TAG, "onClickFavoriteCb: deleted count: " + count);
+        }
     }
 }

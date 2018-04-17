@@ -2,6 +2,7 @@ package org.mikolajczak.popularmovies.model;
 
 public class Movie {
 
+    private int moviedb_id;
     private String poster;
     private String title;
     private String releaseDate;
@@ -12,7 +13,8 @@ public class Movie {
 
     }
 
-    public Movie(String poster, String title, String releaseDate, Double voteAvg, String plotSynopsis) {
+    public Movie(String poster, String title, String releaseDate, Double voteAvg, String plotSynopsis, int moviedb_id) {
+        this.moviedb_id = moviedb_id;
         this.poster = poster;
         this.title = title;
         this.releaseDate = releaseDate;
@@ -38,5 +40,9 @@ public class Movie {
 
     public String getPlotSynopsis() {
         return plotSynopsis;
+    }
+
+    public int getMoviedbId() {
+        return moviedb_id;
     }
 }

@@ -7,7 +7,7 @@ import org.mikolajczak.popularmovies.model.FavoritesContract.FavoritesEntry;
 
 public class FavoritesDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "favorites.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
 
     public FavoritesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -17,14 +17,15 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         final String SQL_CREATE_FAVORITES_TABLE = "CREATE TABLE " +
                 FavoritesEntry.TABLE_NAME + " (" +
-                FavoritesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                FavoritesEntry.COLUMN_MOVIEDB_ID + " INTEGER NOT NULL, " +
+                FavoritesEntry.COLUMN_MOVIEDB_ID + " INTEGER NOT NULL PRIMARY KEY, " +
                 FavoritesEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 FavoritesEntry.COLUMN_POSTER + " TEXT, " +
                 FavoritesEntry.COLUMN_RELEASE + " TEXT, " +
                 FavoritesEntry.COLUMN_VOTE + " REAL, " +
                 FavoritesEntry.COLUMN_PLOT + " TEXT" +
                 ");";
+
+
         db.execSQL(SQL_CREATE_FAVORITES_TABLE);
     }
 

@@ -178,13 +178,14 @@ public class ThemoviedbApi {
             for (int i = 0; i < resultsJsonArray.length(); i++) {
                 jsonMovie = resultsJsonArray.getJSONObject(i);
 
+                int id = jsonMovie.getInt("id");
                 String poster = jsonMovie.getString("poster_path");
                 String title = jsonMovie.getString("original_title");
                 String releaseDate = jsonMovie.getString("release_date");
                 Double voteAvg = jsonMovie.getDouble("vote_average");
                 String plotSynopsis = jsonMovie.getString("overview");
 
-                movie = new Movie(poster, title, releaseDate, voteAvg, plotSynopsis);
+                movie = new Movie(poster, title, releaseDate, voteAvg, plotSynopsis, id);
                 movies.add(movie);
             }
         } catch (JSONException e) {
