@@ -2,6 +2,7 @@ package org.mikolajczak.popularmovies;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,12 +29,14 @@ public class DetailActivity extends AppCompatActivity {
     private static final int DEFAULT_POSITION = -1;
 
     private Movie movie;
+    private boolean isFavorite;
 
     @BindView(R.id.title_tv) TextView titleTv;
     @BindView(R.id.poster_iv) ImageView imageVi;
     @BindView(R.id.release_date_tv) TextView releaseDateTv;
     @BindView(R.id.vote_tv) TextView voteTv;
     @BindView(R.id.plot_tv) TextView plotTv;
+    @BindView(R.id.favorite_cb) CheckBox favoriteCb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,19 @@ public class DetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         movie = ThemoviedbApi.getMovie(position);
+
+        Uri uri = FavoritesContract.FavoritesEntry.CONTENT_URI.buildUpon().appendPath(
+                String.valueOf(movie.getMoviedbId())).build();
+        Cursor cursor = getContentResolver().query(uri,null,null,null,null);
+        if(cursor != null) {
+            Log.d(TAG, "onCreate: cursor.getCount: " + cursor.getCount());
+            if (cursor.getCount() > 0) {
+                isFavorite = true;
+            } else {
+                isFavorite = false;
+            }
+        }
+
         if (movie != null) {
             setTitle(movie.getTitle());
             populateUI(movie);
@@ -71,6 +87,7 @@ public class DetailActivity extends AppCompatActivity {
         releaseDateTv.setText(movie.getReleaseDate());
         voteTv.setText(String.valueOf(movie.getVoteAvg()));
         plotTv.setText(movie.getPlotSynopsis());
+        favoriteCb.setChecked(isFavorite);
     }
 
     private void CloseOnError() {

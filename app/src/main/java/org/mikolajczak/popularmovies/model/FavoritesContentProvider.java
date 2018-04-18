@@ -58,6 +58,17 @@ public class FavoritesContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+            case FAVORITES_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+                retCursor = db.query(FavoritesEntry.TABLE_NAME,
+                        projection,
+                        "moviedb_id=?",
+                        new String[]{id},
+                        null,
+                        null,
+                        sortOrder
+                        );
+                break;
             default:
                 throw new UnsupportedOperationException("Not implemented");
         }
