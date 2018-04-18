@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,8 +21,10 @@ import org.mikolajczak.popularmovies.utils.ThemoviedbApi;
 
 public class DiscoveryActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     final private static String TAG  = "MOVIES";
+    final private static String STATE_SPINNER = "spinner";
 
     private RecyclerView recyclerView;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
         }
 
         // spinner setup
-        Spinner spinner = findViewById(R.id.spinner);
+        spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.movies_category, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -49,22 +52,13 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
 
         spinner.setOnItemSelectedListener(this);
 
-        /* debug logging */
-        Cursor cursor = getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,null,null,null,null);
-        String line = "";
-        for (int i = 0 ; i < cursor.getColumnCount(); i++) {
-            line += cursor.getColumnName(i) + "; ";
-        }
-        Log.d(TAG, "onCreate: columns: " + line );
-        while(cursor.moveToNext()) {
-            line = "";
-            for (int i = 0 ; i < cursor.getColumnCount(); i++) {
-                line += cursor.getString(i) + "; ";
-            } Log.d(TAG, "onCreate: " + line );
 
+        if(savedInstanceState != null) {
+            Log.d(TAG, "onCreate: restore savedInstanceState");
+            spinner.setSelection(savedInstanceState.getInt(STATE_SPINNER));
+        } else {
+            Log.d(TAG, "onCreate: saveDinstanceState is NULL!");
         }
-
-        /* end debug logging */
     }
 
 
@@ -128,5 +122,13 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.d(TAG, "onSaveInstanceState: ");
+        savedInstanceState.putInt(STATE_SPINNER, spinner.getSelectedItemPosition());
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 }
