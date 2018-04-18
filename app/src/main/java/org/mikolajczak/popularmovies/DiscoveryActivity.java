@@ -28,6 +28,7 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "discoveryActivity onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discovery);
 
@@ -39,18 +40,26 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
         recyclerView.setAdapter(moviesAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3));
 
+        spinner = findViewById(R.id.spinner);
+        TextView error_tv = findViewById(R.id.error_message);
         if(isInternetConnection() && ! ThemoviedbApi.isConfigured()) {
+            error_tv.setVisibility(View.GONE);
+            spinner.setVisibility(View.VISIBLE);
             setupDb();
+        } else if (! isInternetConnection() && ! ThemoviedbApi.isConfigured()){
+            error_tv.setVisibility(View.VISIBLE);
+            spinner.setVisibility(View.GONE);
+            ThemoviedbApi.setActiveCategory(2);
         }
 
+
         // spinner setup
-        spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.movies_category, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-
         spinner.setOnItemSelectedListener(this);
+
 
 
         if(savedInstanceState != null) {
@@ -86,6 +95,7 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
 
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume: ONRESUME!!!");
         super.onResume();
         if (isInternetConnection() && ! ThemoviedbApi.isConfigured()) {
             setupDb();
@@ -95,16 +105,13 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
     private boolean isInternetConnection() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context
                 .CONNECTIVITY_SERVICE);
-        TextView error_tv = findViewById(R.id.error_message);
         Log.d(TAG, "isInternetConnection: ThemoviedbApi.isConfigured: " + ThemoviedbApi.isConfigured());
         if(ThemoviedbApi.isConfigured() ||
                 manager.getActiveNetworkInfo() != null &&
                 manager.getActiveNetworkInfo().isAvailable() &&
                 manager.getActiveNetworkInfo().isConnected()) {
-            error_tv.setVisibility(View.GONE);
             return true;
         } else {
-            error_tv.setVisibility(View.VISIBLE);
             return false;
         }
     }

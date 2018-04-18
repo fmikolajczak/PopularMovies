@@ -3,6 +3,7 @@ package org.mikolajczak.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     @Override
     public int getItemCount() {
         int count = ThemoviedbApi.getCount();
+
+        Log.d(TAG, "getItemCount: " + itemCount);
+
         if (count > itemCount) {
             itemCount = count;
         }
