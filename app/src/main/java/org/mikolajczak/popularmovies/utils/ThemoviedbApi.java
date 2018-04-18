@@ -1,6 +1,8 @@
 package org.mikolajczak.popularmovies.utils;
 
 
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -9,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mikolajczak.popularmovies.BuildConfig;
+import org.mikolajczak.popularmovies.model.FavoritesContract;
 import org.mikolajczak.popularmovies.model.Movie;
 
 import java.io.IOException;
@@ -34,6 +37,7 @@ public class ThemoviedbApi {
 
     private static ArrayList<Movie> moviesPopular = new ArrayList<>();
     private static ArrayList<Movie> moviesToprated = new ArrayList<>();
+    private static ArrayList<Movie> moviesFavorites = new ArrayList<>();
 
     private static int activeCategory = 0 ;
 
@@ -44,6 +48,8 @@ public class ThemoviedbApi {
 
     final private static String TAG = "MOVIES";
     private static boolean configured = false;
+
+    public static Context context;
 
     public static void retrieveMoviesOnBackgroundThread() {
         if ( activeCategory == 0) {
@@ -207,6 +213,8 @@ public class ThemoviedbApi {
                 retrieveTopratedMoviesOnBackgroundThread();
             }
             return moviesToprated.get(index);
+        } else if (activeCategory == 2) {
+            return moviesFavorites.get(index);
         }
         return null;
     }
@@ -218,13 +226,35 @@ public class ThemoviedbApi {
 
     public static void setActiveCategory(int activeCategory) {
         ThemoviedbApi.activeCategory = activeCategory;
+        if(activeCategory == 2) {
+            Cursor cursor = context.getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI, null,null,null,null);
+            Movie movie;
+            ArrayList<Movie> moviesList = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                //Movie(String poster, String title, String releaseDate, Double voteAvg, String plotSynopsis, int moviedb_id)
+                movie = new Movie(
+                        cursor.getString(cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_POSTER)),
+                        cursor.getString(cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_RELEASE)),
+                        cursor.getDouble(cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_VOTE)),
+                        cursor.getString(cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_PLOT)),
+                        cursor.getInt(cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_MOVIEDB_ID))
+                        );
+                moviesList.add(movie);
+            }
+            moviesFavorites = moviesList;
+        }
     }
 
     public static int getCount() {
         if (activeCategory ==0) {
             return moviesPopular.size();
-        } else {
+        } else if (activeCategory == 1 ){
             return moviesToprated.size();
+        } else if (activeCategory == 2){
+            return moviesFavorites.size();
+        } else {
+            return 0;
         }
     }
 

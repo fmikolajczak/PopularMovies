@@ -28,6 +28,8 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discovery);
 
+        ThemoviedbApi.context = getApplicationContext();
+
         recyclerView = findViewById(R.id.movies_rv);
         MoviesAdapter moviesAdapter = new MoviesAdapter();
 
@@ -47,8 +49,8 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
 
         spinner.setOnItemSelectedListener(this);
 
+        /* debug logging */
         Cursor cursor = getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,null,null,null,null);
-
         String line = "";
         for (int i = 0 ; i < cursor.getColumnCount(); i++) {
             line += cursor.getColumnName(i) + "; ";
@@ -61,6 +63,8 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
             } Log.d(TAG, "onCreate: " + line );
 
         }
+
+        /* end debug logging */
     }
 
 
@@ -113,6 +117,7 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "onItemSelected: position: " + position);
         ThemoviedbApi.setActiveCategory(position);
         RecyclerView recyclerView = findViewById(R.id.movies_rv);
         if(recyclerView.getAdapter() != null ) {

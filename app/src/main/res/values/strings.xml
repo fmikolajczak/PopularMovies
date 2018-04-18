@@ -16,5 +16,6 @@
     <string-array name="movies_category">
         <item>Most Popular</item>
         <item>Highest Rated</item>
+        <item>Favorites</item>
     </string-array>
 </resources>
