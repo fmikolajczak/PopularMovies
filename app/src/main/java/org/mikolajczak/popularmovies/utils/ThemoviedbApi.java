@@ -1,11 +1,12 @@
 package org.mikolajczak.popularmovies.utils;
 
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -33,6 +35,10 @@ public class ThemoviedbApi {
     final static String API_BASE_URL = "https://api.themoviedb.org/3";
     final static String API_KEY_PARAM = "api_key";
     final static String API_PAGE_PARAM = "page";
+    final static String API_MOVIE_PATH = "movie";
+    final static String API_VIDEOS_PATH = "videos";
+    final static String API_REVIEWS_PATH = "reviews";
+
     private static final int THRESHOLD = 20;
 
     private static ArrayList<Movie> moviesPopular = new ArrayList<>();
@@ -110,7 +116,7 @@ public class ThemoviedbApi {
          * @return list of movies
          */
     public static ArrayList<Movie> getMovies(String category, int page) {
-        URL url = buildUrl(category, page);
+        URL url = buildMovieListUrl(category, page);
 
         String json;
         try {
@@ -143,7 +149,7 @@ public class ThemoviedbApi {
     }
 
 
-    private static URL buildUrl(String path, int page) {
+    private static URL buildMovieListUrl(String path, int page) {
         Uri buildUri = Uri.parse(API_BASE_URL)
                 .buildUpon()
                 .appendEncodedPath(path)
@@ -159,7 +165,24 @@ public class ThemoviedbApi {
         return url;
     }
 
-    static ArrayList<Movie> getMoviesFromJson(String json) {
+    private static URL buildMovieDetailUrl(int moviedbId, String itemType) {
+        Uri buildUri = Uri.parse(API_BASE_URL)
+                .buildUpon()
+                .appendEncodedPath(API_MOVIE_PATH)
+                .appendEncodedPath(String.valueOf(moviedbId))
+                .appendEncodedPath(itemType)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .build();
+        URL url = null;
+        try {
+            url = new URL(buildUri.toString());
+        }catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    private static ArrayList<Movie> getMoviesFromJson(String json) {
         ArrayList<Movie> movies = new ArrayList<>();
         JSONObject jsonObject;
         try {
@@ -264,5 +287,68 @@ public class ThemoviedbApi {
 
     public static boolean isConfigured(){
         return configured;
+    }
+
+    /*
+     * https://stackoverflow.com/questions/574195/android-youtube-app-play-video-intent
+     */
+    public static void watchYoutubeVideo(Context context, String id){
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + id));
+        try {
+            context.startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            context.startActivity(webIntent);
+        }
+    }
+
+    public static List<String> getTrailersYoutubeIds(int moviedbId) {
+        URL url = buildMovieDetailUrl(moviedbId, API_VIDEOS_PATH);
+        String jsonString;
+        try {
+            jsonString = getUrlContent(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        List<String> trailersYoutubeIds = getYoutubeIdsFromJson(jsonString);
+        return  trailersYoutubeIds;
+    }
+
+    private static List<String> getYoutubeIdsFromJson(String jsonString) {
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        JSONArray resultsJsonArray;
+        try {
+            resultsJsonArray = jsonObject.getJSONArray("results");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        JSONObject jsonVideo;
+        ArrayList<String> ids = new ArrayList<>();
+        try {
+            for (int i = 0; i < resultsJsonArray.length(); i++) {
+                jsonVideo = resultsJsonArray.getJSONObject(i);
+
+                if(jsonVideo.getString("type") == "Trailer" &&
+                        jsonVideo.getString("site") == "YouTube") {
+                    ids.add(jsonVideo.getString("id"));
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return ids;
     }
 }

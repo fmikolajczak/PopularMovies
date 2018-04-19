@@ -1,15 +1,18 @@
 package org.mikolajczak.popularmovies;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +21,9 @@ import com.squareup.picasso.Picasso;
 import org.mikolajczak.popularmovies.model.FavoritesContract;
 import org.mikolajczak.popularmovies.model.Movie;
 import org.mikolajczak.popularmovies.utils.ThemoviedbApi;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +43,10 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.vote_tv) TextView voteTv;
     @BindView(R.id.plot_tv) TextView plotTv;
     @BindView(R.id.favorite_cb) CheckBox favoriteCb;
+    @BindView(R.id.trailers_layout) LinearLayout trailersLayout;
+    @BindView(R.id.reviews_layout) LinearLayout reviewsLayout;
+
+    private TextView trailersTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +81,37 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
 
+        trailersTv = new TextView(this);
+        trailersLayout.addView(trailersTv);
+
         if (movie != null) {
             setTitle(movie.getTitle());
             populateUI(movie);
+            loadTrailers();
+            loadReviews();
         }
+    }
+
+    private void loadReviews() {
+        //TODO
+        new AsyncTask(){
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                return ThemoviedbApi.getTrailersYoutubeIds(movie.getMoviedbId());
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                ArrayList<String> ids = (ArrayList) o;
+                for(String id : ids) {
+                    trailersTv.append(id);
+                }
+            }
+        }.execute();
+    }
+
+    private void loadTrailers() {
+        //TODO
     }
 
     private void populateUI(Movie movie) {
