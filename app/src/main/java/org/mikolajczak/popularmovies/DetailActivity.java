@@ -2,6 +2,7 @@ package org.mikolajczak.popularmovies;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,11 +49,14 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.reviews_layout) LinearLayout reviewsLayout;
 
     private TextView trailersTv;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        context = this;
 
         Intent intent = getIntent();
         if(intent == null) {
@@ -92,8 +97,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    private void loadReviews() {
-        //TODO
+    private void loadTrailers() {
         new AsyncTask(){
             @Override
             protected Object doInBackground(Object[] objects) {
@@ -102,16 +106,36 @@ public class DetailActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(Object o) {
+
                 ArrayList<String> ids = (ArrayList) o;
+                int i = 0;
                 for(String id : ids) {
-                    trailersTv.append(id);
+                    // trailersTv.append(id + "\n");
+                    addTrailer(id, "Trailer " + ++i);
                 }
             }
         }.execute();
     }
 
-    private void loadTrailers() {
+    private void addTrailer(final String yoututbeTrailerId, String description) {
+        Log.d(TAG, "addTrailer: id: " + yoututbeTrailerId + " description: " + description);
+
+        Button trailerButton = new Button(this);
+        trailerButton.setText(description);
+        trailerButton.setCompoundDrawablesWithIntrinsicBounds(
+                R.drawable.ic_trailer,0,0,0);
+        trailerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ThemoviedbApi.watchYoutubeVideo(context, yoututbeTrailerId);
+            }
+        });
+        trailersLayout.addView(trailerButton);
+    }
+
+    private void loadReviews() {
         //TODO
+
     }
 
     private void populateUI(Movie movie) {

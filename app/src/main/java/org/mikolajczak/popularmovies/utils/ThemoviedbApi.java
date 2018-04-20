@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -317,6 +318,7 @@ public class ThemoviedbApi {
     }
 
     private static List<String> getYoutubeIdsFromJson(String jsonString) {
+        Log.d(TAG, "getYoutubeIdsFromJson: jsonString: " + jsonString);
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(jsonString);
@@ -338,10 +340,10 @@ public class ThemoviedbApi {
         try {
             for (int i = 0; i < resultsJsonArray.length(); i++) {
                 jsonVideo = resultsJsonArray.getJSONObject(i);
-
-                if(jsonVideo.getString("type") == "Trailer" &&
-                        jsonVideo.getString("site") == "YouTube") {
-                    ids.add(jsonVideo.getString("id"));
+                if(jsonVideo.getString("type").equals("Trailer") &&
+                        jsonVideo.getString("site").equals("YouTube")) {
+                    Log.d(TAG, "getYoutubeIdsFromJson: jsonVideo added: " + jsonVideo);
+                    ids.add(jsonVideo.getString("key"));
                 }
 
             }
@@ -349,6 +351,7 @@ public class ThemoviedbApi {
             e.printStackTrace();
         }
 
+        Log.d(TAG, "getYoutubeIdsFromJson: ids: " + ids);
         return ids;
     }
 }
