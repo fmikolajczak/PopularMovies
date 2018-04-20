@@ -354,4 +354,59 @@ public class ThemoviedbApi {
         Log.d(TAG, "getYoutubeIdsFromJson: ids: " + ids);
         return ids;
     }
+
+    public static Object getReviews(int moviedbId) {
+        URL url = buildMovieDetailUrl(moviedbId, API_REVIEWS_PATH);
+        String jsonString;
+        try {
+            jsonString = getUrlContent(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        List<String[]> reviews = getReviewsFromJson(jsonString);
+        return  reviews;
+    }
+
+    private static JSONArray getResultArrayFromJson(String jsonString) {
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        JSONArray resultsJsonArray;
+        try {
+            resultsJsonArray = jsonObject.getJSONArray("results");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return resultsJsonArray;
+    }
+    private static List<String[]> getReviewsFromJson(String jsonString) {
+        JSONArray resultsJsonArray = getResultArrayFromJson(jsonString);
+
+        JSONObject jsonReview;
+        ArrayList<String[]> reviews = new ArrayList<>();
+        try {
+            String [] review;
+            for (int i = 0; i < resultsJsonArray.length(); i++) {
+                jsonReview = resultsJsonArray.getJSONObject(i);
+                review = new String[]{
+                        jsonReview.getString("author"),
+                        jsonReview.getString("content"),
+                        jsonReview.getString("id"),
+                        jsonReview.getString("url"),
+                };
+                reviews.add(review);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return reviews;
+    }
 }

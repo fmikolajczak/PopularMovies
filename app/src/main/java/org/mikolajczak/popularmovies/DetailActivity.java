@@ -23,6 +23,7 @@ import com.squareup.picasso.Picasso;
 import org.mikolajczak.popularmovies.model.FavoritesContract;
 import org.mikolajczak.popularmovies.model.Movie;
 import org.mikolajczak.popularmovies.utils.ThemoviedbApi;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +135,27 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void loadReviews() {
-        //TODO
+        new AsyncTask (){
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                return ThemoviedbApi.getReviews(movie.getMoviedbId());
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                List<String[]> reviews = (List<String[]>) o;
+                TextView reviewTv;
+                for(String[] review : reviews) {
+                    reviewTv = new TextView(context);
+                    reviewTv.setTextAppearance(R.style.detailsLabel);
+                    reviewTv.setText("by " + review[0]);
+                    reviewsLayout.addView(reviewTv);
+                    reviewTv = new TextView(context);
+                    reviewTv.append(review[1]);
+                    reviewsLayout.addView(reviewTv);
+                }
+            }
+        }.execute();
 
     }
 
