@@ -66,7 +66,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             if(movie != null) {
                 textView.setText(movie.getTitle());
                 Context context = view.getContext();
-                String posterPath = context.getResources().getString(R.string.image_base_url) + movie.getPoster();
+                //String posterPath = context.getResources().getString(R.string.image_base_url) + movie.getPoster();
+                String posterPath = context.getResources().getString(R.string.image_url)
+                        + ThemoviedbApi.getPosterWidthDiscovery() + movie.getPoster();
+                Log.d(TAG, "bind: posterPath: " + posterPath);
                 Picasso.with(context).load(posterPath).into(imageView);
                 imageView.setContentDescription(context.getResources().getString(R.string.poster_description_prefix) +
                     movie.getTitle());

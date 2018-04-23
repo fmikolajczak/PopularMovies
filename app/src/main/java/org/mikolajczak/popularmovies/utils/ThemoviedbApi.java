@@ -18,6 +18,7 @@ import org.mikolajczak.popularmovies.model.Movie;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -57,6 +58,8 @@ public class ThemoviedbApi {
     private static boolean configured = false;
 
     public static Context context;
+    private static String posterWidthDiscovery;
+    private static String posterWidthDetails;
 
     public static void retrieveMoviesOnBackgroundThread() {
         if ( activeCategory == 0) {
@@ -255,7 +258,6 @@ public class ThemoviedbApi {
             Movie movie;
             ArrayList<Movie> moviesList = new ArrayList<>();
             while (cursor.moveToNext()) {
-                //Movie(String poster, String title, String releaseDate, Double voteAvg, String plotSynopsis, int moviedb_id)
                 movie = new Movie(
                         cursor.getString(cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_POSTER)),
                         cursor.getString(cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_TITLE)),
@@ -408,5 +410,29 @@ public class ThemoviedbApi {
         }
 
         return reviews;
+    }
+
+    public static void setPosterImageSize(int displayWidth)  {
+        int[] availableWidths =  { 92, 154, 185, 342, 500, 780 };
+        int discoveryWidth = availableWidths[0];
+        int detailsWidth = availableWidths[0];
+        for (int i = 1; i < availableWidths.length ; i++ ) {
+            if(availableWidths[i] * 3 < displayWidth) {
+                discoveryWidth = availableWidths[i];
+            }
+            if(availableWidths[i] < displayWidth) {
+                detailsWidth = availableWidths[i];
+            }
+        }
+        posterWidthDiscovery = "w" + discoveryWidth;
+        posterWidthDetails = "w" + detailsWidth;
+    }
+
+    public static String getPosterWidthDiscovery() {
+        return  posterWidthDiscovery;
+    }
+
+    public static String getPosterWidthDetails() {
+        return posterWidthDetails;
     }
 }

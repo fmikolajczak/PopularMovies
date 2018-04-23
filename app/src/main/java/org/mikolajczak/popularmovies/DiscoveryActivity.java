@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,6 +34,10 @@ public class DiscoveryActivity extends AppCompatActivity implements AdapterView.
         setContentView(R.layout.activity_discovery);
 
         ThemoviedbApi.context = getApplicationContext();
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        ThemoviedbApi.setPosterImageSize(metrics.widthPixels);
 
         recyclerView = findViewById(R.id.movies_rv);
         MoviesAdapter moviesAdapter = new MoviesAdapter();

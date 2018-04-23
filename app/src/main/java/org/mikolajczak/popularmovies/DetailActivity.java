@@ -148,7 +148,7 @@ public class DetailActivity extends AppCompatActivity {
                 for(String[] review : reviews) {
                     reviewTv = new TextView(context);
                     reviewTv.setTextAppearance(R.style.detailsLabel);
-                    reviewTv.setText("by " + review[0]);
+                    reviewTv.setText(getResources().getString(R.string.review_by) + review[0]);
                     reviewsLayout.addView(reviewTv);
                     reviewTv = new TextView(context);
                     reviewTv.append(review[1]);
@@ -161,7 +161,8 @@ public class DetailActivity extends AppCompatActivity {
 
     private void populateUI(Movie movie) {
         Picasso.with(this)
-                .load(getResources().getString(R.string.image_big_url) + movie.getPoster())
+                .load(getResources().getString(R.string.image_url) +
+                        ThemoviedbApi.getPosterWidthDetails() + movie.getPoster())
                 .into(imageVi);
         imageVi.setContentDescription(getResources().getString(R.string.poster_description_prefix) +
                 movie.getTitle());

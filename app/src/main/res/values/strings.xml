@@ -12,8 +12,10 @@
     <string name="no_internet_error_message">No internet connection! Displaying only favorites movies.</string>
     <string name="trailers_label">Trailers</string>
     <string name="reviews_label">Reviews</string>
+    <string name="review_by">Review by</string>
     <item name="image_base_url" type="string">http://image.tmdb.org/t/p/w185</item>
     <item name="image_big_url" type="string">http://image.tmdb.org/t/p/w342</item>
+    <item name="image_url" type="string">http://image.tmdb.org/t/p/</item>
 
     <string-array name="movies_category">
         <item>Most Popular</item>

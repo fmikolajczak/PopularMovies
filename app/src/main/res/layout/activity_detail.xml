@@ -111,6 +111,7 @@
             android:layout_below="@id/trailers_label">
         </LinearLayout>
         <TextView
+            android:visibility="gone"
             android:id="@+id/reviews_label"
             android:text="@string/reviews_label"
             android:layout_width="wrap_content"
